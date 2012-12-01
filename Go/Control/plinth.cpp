@@ -1,4 +1,7 @@
+#include "board.h"
+
 #include "plinth.h"
+
 
 namespace Go
 {
@@ -25,5 +28,9 @@ namespace Go
             return true;
     }
 
+    const std::set<unsigned int> & Plinth::getNeighbourg(void)
+    {
+        return m_board->getNeighbourg(m_id);
+    }
 
 }

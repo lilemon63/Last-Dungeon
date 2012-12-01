@@ -61,7 +61,11 @@ namespace Go
             ListPlinth::const_iterator const end = m_listPlinth.end();
             ListPlinth::iterator it = m_listPlinth.find(i); //get the plinth where we click on.
             if(it != end)
-                m_control->putPawn( it->second );//put a pawn in this plinth TODO : different pawn
+            {
+                Pawn * p = new Pawn( currentPlayer->getPlayer() );
+                if( m_control->putPawn( it->second, p) )
+                    delete p;//put a pawn 8 this plinth TODO : different pawn
+            }
             else
             {
             }
@@ -127,25 +131,26 @@ namespace Go
         return false;
     }
 
-    irr::scene::ISceneNode * Vue::setBoard(const irr::core::vector3df & position)
+    void Vue::setBoard(const irr::core::vector3df & position, const irr::core::vector3df & rotation)
     {
         irr::scene::ISceneNode * i = sceneManager->addEmptySceneNode(NULL);
         i->setPosition(irr::core::vector3df(position) );
-        return i;
+        i->setRotation(irr::core::vector3df(rotation) );
+        lBoard.push_back(i);
     }
 
     void Vue::setPlinth(const irr::core::vector3df & position, const irr::core::vector3df & angle,
-                                            irr::scene::ISceneNode * parent, Plinth * p)
+                                            int parent, Plinth * p)
     {
-        irr::scene::ISceneNode * i = p->set(position, angle, parent, sceneManager);
+        irr::scene::ISceneNode * i = p->set(position, angle, lBoard[parent], sceneManager);
         m_listPlinth[i] = p;
     }
 
     void Vue::setPlayer(unsigned int num)
     {
-        camera = m_listPlayer[num]->getCamera();
+        currentPlayer = m_listPlayer[num];
+        camera = currentPlayer->getCamera();
         sceneManager->setActiveCamera( camera );
-        sceneManager->addLightSceneNode(camera, irr::core::vector3df(0, 0, 0) );
     }
 
     Vue::~Vue(void)
@@ -159,7 +164,9 @@ namespace Go
 
     irr::scene::ICameraSceneNode * Vue::addCamera(void)
     {
-        return sceneManager->addCameraSceneNodeFPS(NULL);
+        irr::scene::ICameraSceneNode * cam = sceneManager->addCameraSceneNodeFPS(NULL);
+        sceneManager->addLightSceneNode(cam, irr::core::vector3df(0, 0, 0) );
+        return cam;
     }
 
     void Vue::changeCameraPos(irr::f32 x, irr::f32 y, irr::f32 z )
@@ -183,15 +190,5 @@ namespace Go
     void Vue::putPawn(Pawn * pa, Plinth * pl)
     {
         pa->set(sceneManager, pl);
-    }
-
-    void Vue::deleteGroupe(Groupe * g)
-    {
-        Groupe::const_iterator const end = g->end();
-        Groupe::iterator it = g->begin();
-        for( ; it != end; ++it)
-        {
-            (*it)->remove();
-        }
     }
 }

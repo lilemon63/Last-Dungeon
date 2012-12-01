@@ -9,6 +9,8 @@
 namespace Go
 {
     class Plinth;
+    class Player;
+    class GroupPawn;
 
     /** @brief Represent a Pawn (pion/pierre in french).<br/>
       All Pawn must herit of the class Pawn.<br/>
@@ -20,7 +22,7 @@ namespace Go
     public:
         /** @brief Construct a pawn.<br/>
             TODO : put an typed enum for the pawn's type */
-        Pawn();
+        Pawn(Player * player);
 
         /** @brief Put a pawn on a plinth (socle in french).<br/>
         /!\ Only the Go::Vue should call this method
@@ -42,6 +44,18 @@ namespace Go
             Nodes are in a scene manager node's tree.
             @return irr::scene::ISceneNode * : pawn's node */
         irr::scene::ISceneNode * getNode(void){ return m_vue->getNode(); }
+
+        Player * getPlayer(void){ return m_player; }
+
+        void setGroup(GroupPawn * g){ m_group = g; }
+
+        unsigned int getIdGroup(void);
+
+        unsigned int getPlinthId(void);
+
+        unsigned int getFreedom(void);
+
+        GroupPawn * getGroup(void){ return m_group;}
     private :
 
         /** @brief VuePawn define the pawn's graphisme. */
@@ -49,6 +63,10 @@ namespace Go
 
         /** @brief Plinth where the pawn is on. If m_plinth is NULL, the pawn isn't in a plinth yet. */
         Plinth * m_plinth;
+
+        Player * m_player;
+
+        GroupPawn * m_group;
     };
 }
 

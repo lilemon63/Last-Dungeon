@@ -40,7 +40,7 @@ namespace Go
         /** @brief add a board (plateau in french). A board is a set of plinth.<br/>
           Only the serverGo should call this method.
             @param const irr::core::vector3df & position : position of the board in the map. */
-        irr::scene::ISceneNode * setBoard(const irr::core::vector3df & position);
+        void setBoard(const irr::core::vector3df & position, const irr::core::vector3df & rotation);
 
         /** @brief add a plinth (socle in french). A plinth is where you will put pawn (pion/pierre in french).<br/>
             Only the serverGo should call this method.
@@ -50,7 +50,7 @@ namespace Go
             @param Plinth * p : plinth to add. */
         void setPlinth(const irr::core::vector3df & position,
                        const irr::core::vector3df & angle,
-                       irr::scene::ISceneNode * parent,
+                       int parent,
                        Plinth * p);
 
         /** @brief Add the sky dome
@@ -88,13 +88,6 @@ namespace Go
             @param Plinth * : plinth where the pawn will be put. */
         void putPawn(Pawn *, Plinth *);
 
-        /** @brief a group of pawn. */
-        typedef std::vector<Pawn *> Groupe;
-
-        /** @brief destroy a pawn, must be inline for good performs
-            @param Groupe * g : group of pawn which will be destroyed */
-        void deleteGroupe(Groupe * g);
-
         /** @brief delete the vue.<br/>
             /!\ You shouldn't call it directly, you should call remove() instead. */
         ~Vue(void);
@@ -112,6 +105,8 @@ namespace Go
         /** @brief current camera */
         irr::scene::ICameraSceneNode* camera;
 
+        PlayerVue * currentPlayer;
+
         typedef std::vector<PlayerVue *> ListPlayer;
         /** @brief List of local player in this cumputer */
         ListPlayer m_listPlayer;
@@ -128,6 +123,9 @@ namespace Go
         typedef std::map<irr::scene::ISceneNode *, Plinth *> ListPlinth;
         /** @brief list of plinth */
         ListPlinth m_listPlinth;
+
+        typedef std::vector<irr::scene::ISceneNode *> ListBoard;
+        ListBoard lBoard;
     };
 }
 

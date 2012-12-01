@@ -1,6 +1,7 @@
 #include "vueplinth.h"
 
 
+
 namespace Go
 {
 
@@ -12,7 +13,12 @@ namespace Go
         //m_node = sceneManager->addCubeSceneNode(3, parent, -1, position, angle);
         //m_node->setMesh(sceneManager->getMesh("/home/neckara/Documents/Irrlicht/irrlicht-1.7.3/media/skydome.jpg")); //cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
         // m_node = sceneManager->addMeshSceneNode(sceneManager->getMesh("Socle_non_anime.3ds") , parent, -1, position, angle);
-       m_node = sceneManager->addMeshSceneNode(sceneManager->getMesh("/home/neckara/Bureau/Socle_dabou_optimisation.3ds") , parent, -1, position, angle);
+       //m_node = sceneManager->addMeshSceneNode(sceneManager->getMesh("/home/neckara/Bureau/Socle_dabou_optimisation.3ds") , parent, -1, position, angle);
+
+        irr::scene::IAnimatedMesh * m = sceneManager->getMesh("/home/neckara/Bureau/Socle_non_anime_mis_en_valeur (2).3ds");
+        //irr::scene::IAnimatedMesh * m = sceneManager->getMesh("/home/neckara/Bureau/untitled.obj");
+        m->setHardwareMappingHint(irr::scene::EHM_STATIC);
+        m_node = sceneManager->addMeshSceneNode( m , parent, -1, position, angle);
         // anode->setAnimationSpeed(15); for animated graphism
     }
 }

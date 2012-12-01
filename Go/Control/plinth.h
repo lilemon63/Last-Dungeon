@@ -3,11 +3,14 @@
 
 #include<irrlicht/irrlicht.h>
 #include<iostream>
+#include<vector>
+#include<set>
 #include"../Vue/vueplinth.h"
 
 namespace Go
 {
     class Pawn;
+    class Board;
 
     /** @brief A plinth (socle in french) is an element where players can put pawn (pion/pierre in french).<br/>
         A board is composed of Plinth.
@@ -22,7 +25,7 @@ namespace Go
 
         /** @brief Create a plinth
           @param const Type type = Test : plinth's type by default a plinth is a plinth test. */
-        Plinth(const Type type = Test) : m_type(type), m_vue(NULL), m_pawn(NULL){}
+        Plinth(Board * b, unsigned int id, const Type type = Test) : m_type(type), m_vue(NULL), m_pawn(NULL), m_board(b), m_id(id){}
 
         /** @brief Set a plinth on a board.<br/>
             /!\ Only Go::Vue should call this method
@@ -62,6 +65,13 @@ namespace Go
         /** @brief Get the pawn which is on the plinth.
             @return Pawn * : pawn which is put on the plinth else NULL */
         Pawn * getPawn(void){ return m_pawn; }
+
+        const std::set<unsigned int> & getNeighbourg(void);
+
+        Board * getBoard(void){ return m_board; }
+
+        unsigned int getId(void){ return m_id; }
+
     protected :
         /** @brief type of plinth */
         const Type m_type;
@@ -71,6 +81,10 @@ namespace Go
 
         /** @brief Pawn which is on this plinth */
         Pawn * m_pawn;
+
+        Board * m_board;
+
+        unsigned int m_id;
     };
 }
 #endif // PLINTH_H

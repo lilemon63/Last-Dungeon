@@ -2,8 +2,9 @@
 
 namespace Go
 {
-    PlayerVue::PlayerVue(irr::scene::ICameraSceneNode *camera)
-        : m_camera(camera)
+    PlayerVue::PlayerVue(irr::scene::ICameraSceneNode *camera, Player *player)
+        : m_camera(camera),
+          m_player(player)
     {
     }
 }

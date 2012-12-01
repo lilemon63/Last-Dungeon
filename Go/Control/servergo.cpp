@@ -2,55 +2,29 @@
 #include "plinth.h"
 #include "../Vue/playervue.h"
 #include "pawn.h"
+#include "groupplayer.h"
+#include "player.h"
+#include "grouppawn.h"
+#include "map.h"
 
 namespace Go
 {
-    ServerGo::ServerGo(const std::string &, Preferences & pref)
-        : m_vue(pref, this)
+    ServerGo::ServerGo(const std::string & file, Preferences & pref)
+        : m_vue(pref, this),
+          m_map(file, this)
     {
+        GroupPlayer * g = new GroupPlayer(1);
+        Player * p = new Player(0);
+        p->setColor(Player::Blue);
+        p->setTeam(g);
+
+        GroupPlayer * g2 = new GroupPlayer(2);
+        Player * p2 = new Player(1);
+        p2->setColor(Player::Red);
+        p2->setTeam(g2);
 
         pref.addServerGo(this);
-        //useless, it's the loading of map which will put the scene
-
-        irr::scene::ISceneNode *i = m_vue.setBoard(irr::core::vector3df(0,0,0) ); //put into a Board class
-
-        m_plinth = new Plinth[9*6];
-
-        for(int j = 1; j != 4; ++j) //TODO put plinth relative to other plinth
-        {
-            m_vue.setPlinth(irr::core::vector3df(-5,0,(j-1)*5+5), irr::core::vector3df(0,0,0), i, &m_plinth[3*(j-1)]);
-            m_vue.setPlinth(irr::core::vector3df(0,0,(j-1)*5+5), irr::core::vector3df(0,0,0), i, &m_plinth[3*(j-1)+1]);
-            m_vue.setPlinth(irr::core::vector3df(5,0,(j-1)*5+5), irr::core::vector3df(0,0,0), i, &m_plinth[3*(j-1)+2]);
-        }
-
-        for(int j = 1; j != 4; ++j)
-        {
-            m_vue.setPlinth(irr::core::vector3df(-5,-(j)*5+2,+2), irr::core::vector3df(-90,0,0), i, &m_plinth[3*(j-1)+9]);
-            m_vue.setPlinth(irr::core::vector3df(0,-(j)*5+2,+2), irr::core::vector3df(-90,0,0), i, &m_plinth[3*(j-1)+10]);
-            m_vue.setPlinth(irr::core::vector3df(5,-(j)*5+2,+2), irr::core::vector3df(-90,0,0), i, &m_plinth[3*(j-1)+11]);
-        }
-
-        for(int j = 1; j != 4; ++j)
-        {
-            m_vue.setPlinth(irr::core::vector3df(-5,-(j)*5+2,3+5*3), irr::core::vector3df(90,0,0), i, &m_plinth[3*(j-1)+18]);
-            m_vue.setPlinth(irr::core::vector3df(0,-(j)*5+2,3+5*3), irr::core::vector3df(90,0,0), i, &m_plinth[3*(j-1)+19]);
-            m_vue.setPlinth(irr::core::vector3df(5,-(j)*5+2,3+5*3), irr::core::vector3df(90,0,0), i, &m_plinth[3*(j-1)+20]);
-        }
-
-        for(int j = 1; j != 4; ++j)
-        {
-            m_vue.setPlinth(irr::core::vector3df(+8,-3,(j-1)*5+5), irr::core::vector3df(0,0,-90), i, &m_plinth[3*(j-1)+27]);
-            m_vue.setPlinth(irr::core::vector3df(+8,-8,(j-1)*5+5), irr::core::vector3df(0,0,-90), i, &m_plinth[3*(j-1)+28]);
-            m_vue.setPlinth(irr::core::vector3df(+8,-13,(j-1)*5+5), irr::core::vector3df(0,0,-90), i, &m_plinth[3*(j-1)+29]);
-        }
-
-        for(int j = 1; j != 4; ++j)
-        {
-            m_vue.setPlinth(irr::core::vector3df(-8,-3,(j-1)*5+5), irr::core::vector3df(0,0,+90), i, &m_plinth[3*(j-1)+36]);
-            m_vue.setPlinth(irr::core::vector3df(-8,-8,(j-1)*5+5), irr::core::vector3df(0,0,+90), i, &m_plinth[3*(j-1)+37]);
-            m_vue.setPlinth(irr::core::vector3df(-8,-13,(j-1)*5+5), irr::core::vector3df(0,0,+90), i, &m_plinth[3*(j-1)+38]);
-        }
-
+/*
         for(int j = 1; j != 4; ++j)
         {
             m_vue.setPlinth(irr::core::vector3df(-5,-16,(j-1)*5+5), irr::core::vector3df(180,180,0), i, &m_plinth[3*(j-1)+45]);
@@ -72,31 +46,37 @@ namespace Go
                            "/home/neckara/Documents/Irrlicht/irrlicht-1.7.3/media/irrlicht2_bk.jpg"};
         m_vue.setCube(img, irr::core::vector3df(1000,1000,1000)); */
 
-           m_vue.setNbPlayer(1);
-           m_vue.addPlayer( 0, new PlayerVue( m_vue.addCamera() ) );
+           m_vue.setNbPlayer(2);
+           irr::scene::ICameraSceneNode * c = m_vue.addCamera();
+           m_vue.addPlayer( 0, new PlayerVue( c, p ) );
+           m_vue.addPlayer( 1, new PlayerVue( c , p2) );
            m_vue.setPlayer(0);
     }
 
     ServerGo::~ServerGo(void)
     {
-        delete [] m_plinth;
     }
 
-
-    void ServerGo::putPawn(Plinth * plinth) //TODO add Pawn
+    void ServerGo::setBoard(float x, float y, float z, float a, float b, float c)
     {
-        Pawn * p = new Pawn();
-        if( plinth->setPawn(p) )
-        {
-            m_vue.putPawn(p , plinth);
-        }
-
-        else
-        {
-            Vue::Groupe g;
-            g.push_back(plinth->getPawn() );
-            m_vue.deleteGroupe(&g);
-            delete p;
-        }
+        m_vue.setBoard(irr::core::vector3df(x,y,z), irr::core::vector3df(a, b,c) );
     }
+
+
+    bool ServerGo::putPawn(Plinth * plinth, Pawn * p) //TODO add Pawn
+    {
+        return m_map.putPawn(plinth, p);
+    }
+
+    void ServerGo::setPlinth(float x, float y, float z, float a, float b, float c, int board, Plinth * p)
+    {
+        m_vue.setPlinth(irr::core::vector3df(x,y,z), irr::core::vector3df(a,b,c), board, p);
+    }
+
+    void ServerGo::putPawnOnPlinth(Plinth * plinth, Pawn * p)
+    {
+        m_vue.putPawn(p, plinth);
+    }
+
+
 }

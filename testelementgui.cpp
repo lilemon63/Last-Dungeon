@@ -31,20 +31,34 @@ namespace Test
         pref.setShortcut(irr::KEY_KEY_1, Go::CAMERA_LOOK_LEFT);
         pref.setShortcut(irr::KEY_DIVIDE, Go::CAMERA_LOOK_FRONT);
         pref.setShortcut(irr::KEY_MULTIPLY, Go::CAMERA_LOOK_BACK);
-        Go::ServerGo s("toto", pref);
+        Go::ServerGo s("test.map", pref);
 
+        gui->addButton(irr::core::rect<irr::s32>(800-100,50,800,80), NULL, -1, L"Passer");
+        gui->addButton(irr::core::rect<irr::s32>(800-100,80,800,110), NULL, -1, L"Abandonner");
+        gui->addStaticText(L"Equipe 1 : 0 points", irr::core::rect<irr::s32>(800-100,130,800,150));
+        gui->addStaticText(L"Neckara", irr::core::rect<irr::s32>(800-80,150,800,180));
+        gui->addStaticText(L"Equipe 2 : 0 points", irr::core::rect<irr::s32>(800-100,190,800,210));
+        gui->addStaticText(L"NeckaraBis", irr::core::rect<irr::s32>(800-80,210,800,230));
+
+        int i = 0;
         /* gestionnaire d'event */
         device->setEventReceiver(this);
         while (device->run())
         {
             driver->beginScene(true,true,irr::video::SColor(255,100,255,255));    // fond blanc
-            sceneManager->drawAll();                    // calcule le rendu
+            //sceneManager->drawAll();                    // calcule le rendu
             gui->drawAll();
             driver->endScene();
-            irr::core::stringw titre;
-            titre += driver->getFPS();
-            device->setWindowCaption(titre.c_str ());//for know the frame rate
+            if(++i == 20)
+            {
+                irr::core::stringw titre;
+                titre += driver->getFPS();
+                device->setWindowCaption(titre.c_str ());//for know the frame rate
+                i = 0;
+            }
         }
+
+        device->drop();
     }
 
     bool TestElementGUI::OnEvent(const irr::SEvent &)

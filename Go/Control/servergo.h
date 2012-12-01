@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../Vue/vue.h"
+#include "map.h"
 
 namespace Go
 {
@@ -20,17 +21,22 @@ namespace Go
         virtual ~ServerGo(void);
 
         /** @brief Try to put a pawn.<br/>
-          TODO : We should also specified the pawn to put.
             @param Plinth * plinth : plinth where the pawn should be put. */
-        void putPawn(Plinth * plinth);
-    private :
+        bool putPawn(Plinth * plinth, Pawn * p);
 
+        void putPawnOnPlinth(Plinth * plinth, Pawn * p);
+
+        void setBoard(float x, float y, float z, float a, float b, float c);
+
+        void setPlinth(float x, float y, float z, float a, float b, float c, int board, Plinth * p);
+
+        void setPlayer(unsigned int numP){ m_vue.setPlayer(numP); }
+    private :
         /** @brief Go::Vue, it's the Vue for the go
            @see Go::Vue */
         Vue m_vue;
 
-        /** @brief all plinth of this board */
-        Plinth * m_plinth;
+        Map m_map;
     };
 }
 #endif // SERVERGO_H

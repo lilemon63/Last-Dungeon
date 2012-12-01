@@ -4,6 +4,8 @@
 #include<iostream>
 #include<irrlicht/irrlicht.h>
 
+#include "../Control/player.h"
+
 namespace Go
 {
     class Plinth;
@@ -15,7 +17,7 @@ namespace Go
         /** @brief create a VuePawn, only a pawn should call this constructor.
           @param irr::scene::ISceneManager * manager : Go's scene manager
           @param Plinth * p : plinth where the pawn'll put on.*/
-        VuePawn(irr::scene::ISceneManager * manager, Plinth * p);
+        VuePawn(irr::scene::ISceneManager * manager, Plinth * p, Player::Color c);
 
         virtual ~VuePawn(void);
 

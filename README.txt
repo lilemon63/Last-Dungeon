@@ -18,8 +18,8 @@ Avancées : étape 1/5 sous-étape 2/3.<br/>
 
 Etapes :
     - vue.
-    - <b>-> contrôleur : règles go puis chargement carte <-</b>
-    - vue/contrôleur : passer/abandonner/affichage des points
+    - contrôleur : règles go puis chargement carte <-
+    - <b>->vue/contrôleur : passer/abandonner/affichage des points<-</b>
     - <b>jouable</b>
     - fenêtre de fin de jeu
     - vue : bouger plateaux / sélectionner pions contrôleur : limite de temps, tours etc...
