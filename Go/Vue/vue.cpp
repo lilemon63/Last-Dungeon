@@ -62,6 +62,7 @@ namespace Go
             ListPlinth::iterator it = m_listPlinth.find(i); //get the plinth where we click on.
             if(it != end)
             {
+                this->Environment->setFocus(this);
                 Pawn * p = new Pawn( currentPlayer->getPlayer() );
                 if( m_control->putPawn( it->second, p) )
                     delete p;//put a pawn 8 this plinth TODO : different pawn
@@ -70,7 +71,9 @@ namespace Go
             {
             }
         }
-        if( event.EventType == irr::EET_KEY_INPUT_EVENT && event.KeyInput.PressedDown )
+
+        if( event.EventType == irr::EET_KEY_INPUT_EVENT && event.KeyInput.PressedDown
+                && event.KeyInput.Key != irr::KEY_RETURN)
         {
             //execute the shortcut keyboard
             ListShortCut::const_iterator const end = m_shortcut.end();

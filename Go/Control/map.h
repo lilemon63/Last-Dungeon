@@ -23,6 +23,8 @@ namespace Go
 
         bool putPawn(Plinth * plinth, Pawn * p);
 
+        bool pass(void);
+
     private :
         std::string name;
         std::string description;
@@ -84,6 +86,12 @@ namespace Go
         int destroyGroup(lua_State *);
 
         int fusionGroup(lua_State *);
+
+        virtual int pass(lua_State*);
+
+        int finPartie(lua_State *);
+
+        int setPoint(lua_State *);
 
         lua_State * state;
         Map(lua_State *state);

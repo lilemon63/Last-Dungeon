@@ -1,6 +1,10 @@
 #include "testelementgui.h"
 #include "Go/Control/servergo.h"
+#include "Go/Vue/buttonpass.h"
+#include "Network/server.h"
 #include<iostream>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
 
 
 namespace Test
@@ -11,6 +15,7 @@ namespace Test
           sceneManager(device->getSceneManager() ),
           gui( device->getGUIEnvironment() )
     {
+        boost::mutex paralleleOperation;
 
         Go::Preferences pref( gui,
                               sceneManager,
@@ -32,19 +37,46 @@ namespace Test
         pref.setShortcut(irr::KEY_DIVIDE, Go::CAMERA_LOOK_FRONT);
         pref.setShortcut(irr::KEY_MULTIPLY, Go::CAMERA_LOOK_BACK);
         Go::ServerGo s("test.map", pref);
+/*
+        Go::ButtonPass * b = new Go::ButtonPass(&s, gui, irr::core::rect<irr::s32>(800-100,50,800,80), L"Passer", NULL);
+        //irr::gui::IGUIButton * passer = gui->addButton(, NULL, -1, );
 
-        gui->addButton(irr::core::rect<irr::s32>(800-100,50,800,80), NULL, -1, L"Passer");
         gui->addButton(irr::core::rect<irr::s32>(800-100,80,800,110), NULL, -1, L"Abandonner");
         gui->addStaticText(L"Equipe 1 : 0 points", irr::core::rect<irr::s32>(800-100,130,800,150));
         gui->addStaticText(L"Neckara", irr::core::rect<irr::s32>(800-80,150,800,180));
         gui->addStaticText(L"Equipe 2 : 0 points", irr::core::rect<irr::s32>(800-100,190,800,210));
         gui->addStaticText(L"NeckaraBis", irr::core::rect<irr::s32>(800-80,210,800,230));
 
+*/
+        Network::Server * server = new Network::Server(4000);
+
+        IRC::IRCClient irc2(NULL, irr::core::rect<irr::s32>(0,480,800,600), gui, *server, paralleleOperation);
+
+        irc = &irc2;
+        irc->setHandle(&s);
+ /*
+        l = gui->addListBox(irr::core::rect<irr::s32>(0,480,800,580), NULL, -1, true);
+        l->insertItem(0, L"tutu", 0);
+        for(int i = 1; i != 30; ++i)
+        {
+            l->insertItem(i, L"toto", 0);// attention n'aime pas les retours à la ligne
+            //l->setItemHeight();
+            l->setSelected(i);
+        }
+        //gui->addTab(irr::core::rect<irr::s32>(780,480,800,580))->; */
+
+
         int i = 0;
         /* gestionnaire d'event */
         device->setEventReceiver(this);
+
+        paralleleOperation.lock();
+
         while (device->run())
         {
+            //server.m_run(1);
+            paralleleOperation.unlock();
+            paralleleOperation.lock();
             driver->beginScene(true,true,irr::video::SColor(255,100,255,255));    // fond blanc
             //sceneManager->drawAll();                    // calcule le rendu
             gui->drawAll();
@@ -58,11 +90,21 @@ namespace Test
             }
         }
 
+        paralleleOperation.unlock();
+
+        delete server;
+
         device->drop();
     }
 
-    bool TestElementGUI::OnEvent(const irr::SEvent &)
+    bool TestElementGUI::OnEvent(const irr::SEvent & event)
     {
+        if( event.EventType == irr::EET_KEY_INPUT_EVENT
+                && event.KeyInput.PressedDown
+                && event.KeyInput.Key == irr::KEY_RETURN)
+        {
+            return irc->OnEvent(event);
+        }
         return false;
     }
 }

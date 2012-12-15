@@ -16,6 +16,13 @@ Outils utilisés : http://jsz.kegtux.org/drupal/licences<br/>
 <br/>
 Avancées : étape 1/5 sous-étape 2/3.<br/>
 
+Possibilité :
+- finir Go
+- salon
+- éditeur
+- chat IRC
+- gestionnaire MàJ
+
 Etapes :
     - vue.
     - contrôleur : règles go puis chargement carte <-

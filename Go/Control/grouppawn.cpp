@@ -8,7 +8,8 @@ namespace Go
     GroupPawn::GroupPawn(Pawn * p, unsigned int freedom)
         : m_listPawn(1, p),
           m_team(p->getPlayer()->getTeam() ),
-          m_freedom(freedom)
+          m_freedom(freedom),
+          m_point(1)
     {
         p->setGroup(this);
     }
@@ -24,8 +25,9 @@ namespace Go
         return (*m_listPawn.begin() )->getPlinthId() ;
     }
 
-    void GroupPawn::remove(void)
+    int GroupPawn::remove(void)
     {
+        int retour = m_point;
         {
             ListPawn::iterator it =  m_listPawn.begin();
             ListPawn::iterator end = m_listPawn.end();
@@ -43,6 +45,7 @@ namespace Go
         }
 
         delete this;
+        return retour;
     }
 
 
@@ -56,6 +59,7 @@ namespace Go
 
     void GroupPawn::fusion(GroupPawn * gp, unsigned int nb)
     {
+        m_point += gp->m_point;
         {
             ListPawn::iterator it = gp->m_listPawn.begin();
             ListPawn::iterator end = gp->m_listPawn.end();
@@ -69,7 +73,10 @@ namespace Go
             Frontier::iterator it = gp->m_frontier.begin();
             Frontier::iterator end = gp->m_frontier.end();
             for( ; it != end ; ++it)
+            {
                 m_frontier[it->first] += it->second;
+                it->first->m_frontier.erase(gp);
+            }
         }
         delete gp;
     }

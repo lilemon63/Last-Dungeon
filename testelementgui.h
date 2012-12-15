@@ -4,6 +4,7 @@
 #include<irrlicht/irrlicht.h>
 #include "elementgui.h"
 #include "Go/preferences.h"
+#include "IRC/Vue/ircclient.h"
 
 namespace Test
 {
@@ -30,6 +31,9 @@ namespace Test
 
         /** @brief gui */
         irr::gui::IGUIEnvironment * gui;
+
+
+        IRC::IRCClient * irc;
     };
 }
 

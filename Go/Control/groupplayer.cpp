@@ -2,7 +2,7 @@
 
 namespace Go
 {
-    GroupPlayer::GroupPlayer(unsigned int id) : m_id(id)
+    GroupPlayer::GroupPlayer(unsigned int id, unsigned int score) : m_id(id), m_score(score)
     {
     }
 }

@@ -5,6 +5,9 @@
 #include <string>
 #include "testelementgui.h"
 
+#include "ofstream.h"
+#include "ifstream.h"
+
 #include "Go/Control/map.h"
 #include "lunar.h"
 
@@ -116,6 +119,10 @@ int main()
             }
             confB << "\n\n";
             confB.close();/**/
+
+            Ofstream out("Params/irc.param");
+            out << std::string("vive neckara") << std::string("81.56.196.139") << std::string("80") << std::string("Neckara");
+            out.close();
 
     Test::TestElementGUI teste(NULL);
     return 0;

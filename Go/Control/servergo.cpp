@@ -17,11 +17,13 @@ namespace Go
         Player * p = new Player(0);
         p->setColor(Player::Blue);
         p->setTeam(g);
+        m_listGroup.push_back(g);
 
         GroupPlayer * g2 = new GroupPlayer(2);
         Player * p2 = new Player(1);
         p2->setColor(Player::Red);
         p2->setTeam(g2);
+        m_listGroup.push_back(g2);
 
         pref.addServerGo(this);
 /*
@@ -78,5 +80,66 @@ namespace Go
         m_vue.putPawn(p, plinth);
     }
 
+    void ServerGo::pass(void)
+    {
+        m_map.pass();
+    }
+
+    bool ServerGo::handle(const std::string & string, IRC::IRCClient * chat)
+    {
+        std::stringstream is(string);
+        std::string command;
+        is >> command;
+        if(command == "pass")
+        {
+           if( m_map.pass() )
+           {
+                chat->printMessage(L"Choisissez les groupes à ignorer puis comptez vos points à moins que vous ne préfériez continuer");
+           }
+           std::cerr << "pass" << std::endl;
+        }
+        else if(command == "surrender" || command == "abandonner")
+        {
+            chat->printMessage(L"Vous avez perdu !");
+            std::cerr << "suite de surrender non-implémenté" << std::endl;
+
+        }
+        else if(command == "getpoint" || command == "getPoint" || command == "getscore" || command == "getScore")
+        {
+            IRC::IRCClient::LineList l;
+
+            ListGroupPlayer::iterator it = m_listGroup.begin();
+            ListGroupPlayer::const_iterator const end = m_listGroup.end();
+
+            l.push_back("-----Scores-------");
+
+            for( ; it != end; ++it)
+            {
+                std::stringstream os;
+                os << "Groupe " << (*it)->getId() << ":     " << (*it)->getScore();
+                l.push_back( os.str() );
+            }
+
+            l.push_back("-----Fin Scores---");
+
+            chat->printMessage(l);
+        }
+        else
+            return false;
+
+        //TODO tourner plateau
+
+        return true;
+    }
+
+    void ServerGo::addPoint(unsigned int team, unsigned int point)
+    {
+        m_listGroup[team-1]->addPoint(point);
+    }
+
+    void ServerGo::finPartie(void)
+    {
+        std::cerr << "fin de la partie" << std::endl;
+    }
 
 }

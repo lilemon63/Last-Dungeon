@@ -15,7 +15,7 @@ namespace Go
         unsigned int getId(void);
         unsigned int getFreedom(void){ return m_freedom; }
         void addFrontier(GroupPawn * group, unsigned int nb);
-        void remove(void);
+        int remove(void);
 
         void fusion(GroupPawn *, unsigned int nb);
     private :
@@ -25,6 +25,7 @@ namespace Go
         unsigned int m_freedom;
         typedef std::map<GroupPawn *, unsigned int> Frontier;
         Frontier m_frontier;
+        int m_point;
     };
 }
 

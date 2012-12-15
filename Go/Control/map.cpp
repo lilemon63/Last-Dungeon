@@ -102,6 +102,9 @@ namespace Go
       method(Map, addFrontier),
       method(Map, destroyGroup),
       method(Map, fusionGroup),
+      method(Map, pass),
+      method(Map, setPoint),
+      method(Map, finPartie),
       {0,0}
     };
 
@@ -230,7 +233,9 @@ namespace Go
     int Map::destroyGroup(lua_State *)
     {
         unsigned int group = lua_tonumber(state, 1);
-        m_currentPlinth->getBoard()->getPtrGroup(group)->remove();
+        GroupPawn * p = m_currentPlinth->getBoard()->getPtrGroup(group);
+
+        lua_pushnumber(state, m_currentPlinth->getBoard()->getPtrGroup(group)->remove() );
         return 1;
     }
 
@@ -245,6 +250,33 @@ namespace Go
 
         g->fusion(m_currentPawn->getGroup(), nb);
                         fprintf(stderr, "koi2");
+        return 1;
+    }
+
+    bool Map::pass(void)
+    {
+        Lunar<Map>::push(state,this);
+        Lunar<Map>::call(state,"pass",0,1);
+        return lua_toboolean(state, -1);
+    }
+
+    int Map::setPoint(lua_State *)
+    {
+        unsigned int team = lua_tonumber(state, 1);
+        unsigned int nbPoint = lua_tonumber(state, 2);
+        m_server->addPoint(team, nbPoint);
+        return 1;
+    }
+
+    int Map::pass(lua_State*)
+    {
+        return 1;
+    }
+
+    int Map::finPartie(lua_State *)
+    {
+        fprintf(stderr, "fin de la partieX\n");
+        m_server->finPartie();
         return 1;
     }
 }
